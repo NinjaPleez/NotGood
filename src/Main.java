@@ -10,7 +10,18 @@ public class Main {
 		initDisplay(800,600);
 		initGL(800,600);
 		Game game = new Game();
-		game.gameLoop();
+		while (true) {
+			game.update();
+			game.render();		
+			Display.update();
+			Display.sync(100);
+ 
+			if (Display.isCloseRequested()) {
+				Display.destroy();
+				System.exit(0);
+			}
+		}
+
 	}
 	
 	private static void initDisplay(int width, int height)
@@ -42,11 +53,13 @@ public class Main {
         	GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
  
         	GL11.glViewport(0,0,width,height);
-		GL11.glMatrixMode(GL11.GL_MODELVIEW);
+		//GL11.glMatrixMode(GL11.GL_MODELVIEW);
  
 		GL11.glMatrixMode(GL11.GL_PROJECTION);
 		GL11.glLoadIdentity();
-		GL11.glOrtho(0, width, height, 0, 1, -1);
+		GL11.glOrtho(0, Display.getWidth(), Display.getHeight(), 0, -1, 1);
 		GL11.glMatrixMode(GL11.GL_MODELVIEW);
+
+		
 	}
 }

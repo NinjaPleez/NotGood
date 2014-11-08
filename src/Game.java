@@ -1,4 +1,5 @@
 import java.io.IOException;
+
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
@@ -7,72 +8,19 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 import org.newdawn.slick.util.ResourceLoader;
- 
-public class TextureExample {
- 
-	/** The texture that will hold the image details */
+
+public class Game {
+	
+	/** The texture that will hold the image details */	
 	private Texture texture;
- 
- 
-	/**
-	 * Start the example
-	 */
-	public void start() {
-		initGL(800,600);
+	
+	public Game(){
 		init();
- 
-		while (true) {
-			GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
-			render();
- 
-			Display.update();
-			Display.sync(100);
- 
-			if (Display.isCloseRequested()) {
-				Display.destroy();
-				System.exit(0);
-			}
-		}
 	}
- 
-	/**
-	 * Initialise the GL display
-	 * 
-	 * @param width The width of the display
-	 * @param height The height of the display
-	 */
-	private void initGL(int width, int height) {
-		try {
-			Display.setDisplayMode(new DisplayMode(width,height));
-			Display.create();
-			Display.setVSyncEnabled(true);
-		} catch (LWJGLException e) {
-			e.printStackTrace();
-			System.exit(0);
-		}
- 
-		GL11.glEnable(GL11.GL_TEXTURE_2D);               
- 
-		GL11.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);          
- 
-        	// enable alpha blending
-        	GL11.glEnable(GL11.GL_BLEND);
-        	GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
- 
-        	GL11.glViewport(0,0,width,height);
-		GL11.glMatrixMode(GL11.GL_MODELVIEW);
- 
-		GL11.glMatrixMode(GL11.GL_PROJECTION);
-		GL11.glLoadIdentity();
-		GL11.glOrtho(0, width, height, 0, 1, -1);
-		GL11.glMatrixMode(GL11.GL_MODELVIEW);
-	}
- 
-	/**
-	 * Initialize resources
-	 */
+	
+	//TODO Move all texture loading into Screen class.
 	public void init() {
- 
+		 
 		try {
 			// load texture from PNG file
 			texture = TextureLoader.getTexture("JPG", ResourceLoader.getResourceAsStream("res/testImg.jpg"));
@@ -87,7 +35,26 @@ public class TextureExample {
 			e.printStackTrace();
 		}
 	}
+
+	public void gameLoop(){
+		while (true) {
+			GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
+			
+			//TODO: Move rendering further down the hierarchy so 
+			//that each screen handles its own render
+			render();
  
+			Display.update();
+			Display.sync(100);
+ 
+			if (Display.isCloseRequested()) {
+				Display.destroy();
+				System.exit(0);
+			}
+		}
+	}
+	
+	// TODO: Move this whole function down into Screen class.
 	/**
 	 * draw a quad with the image on it
 	 */
@@ -103,22 +70,14 @@ public class TextureExample {
 			GL11.glTexCoord2f(1,0);
 			GL11.glVertex2f(800,0);
 			//GL11.glVertex2f(texture.getTextureWidth(),0);
-			//Bottom Left
+			//Bottom Right
 			GL11.glTexCoord2f(1,1);
 			GL11.glVertex2f(800,600);
 			//GL11.glVertex2f(texture.getTextureWidth(),texture.getTextureHeight());
-			//Bottom Right
+			//Bottom Left
 			GL11.glTexCoord2f(0,1);
 			GL11.glVertex2f(0,600);
 			//GL11.glVertex2f(0,texture.getTextureHeight());
 		GL11.glEnd();
-	}
- 
-	/**
-	 * Main Class
-	 */
-	public static void main(String[] argv) {
-		TextureExample textureExample = new TextureExample();
-		textureExample.start();
 	}
 }
